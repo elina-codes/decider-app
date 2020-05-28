@@ -1,56 +1,28 @@
 import React from 'react';
-import logo from './logo.svg';
+// import * as types from './app/types';
 import { Counter } from './features/counter/Counter';
-import './App.css';
+import { DecisionList } from './components/DecisionList';
+import { FormDialog } from './components/FormDialog';
+import * as sampleData from './sample-data';
+import './App.scss';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
+        <FormDialog
+          title="New Decision"
+          content="Start the decision process by entering a title for your conundrum."
+          inputLabel="Decision title"
+          inputType="text"
+          inputId="decision-title"
+        />
       </header>
+      <main>
+        <span>OR</span>
+        <DecisionList decisions={sampleData.decisions} />
+        <Counter />
+      </main>
     </div>
   );
 }

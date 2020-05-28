@@ -1,0 +1,36 @@
+.decisionStatus {
+  // font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  line-height: 1.2;
+
+  svg {
+    font-size: 1rem;
+    margin-right: 0.3em;
+  }
+}
+
+.active {
+  color: green;
+}
+
+.decisionInfoBody {
+  tr {
+    vertical-align: top;
+  }
+
+  td {
+    border-bottom: 0;
+  }
+
+  ol {
+    padding-left: 15px;
+  }
+}
+
+.decisionInfoHead {
+}
+
+.decisionInfoContainer {
+  background: #f9f9f9;
+}

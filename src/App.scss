@@ -1,0 +1,23 @@
+.App {
+  text-align: center;
+}
+
+.App-link {
+  color: rgb(112, 76, 182);
+}
+
+.list--unstyled {
+  padding-left: 0;
+}
+
+.list--unstyled li {
+  list-style: none;
+}
+
+.list--inline li {
+  display: inline;
+
+  &:not(:last-child):after {
+    content: ', ';
+  }
+}
