@@ -29,6 +29,11 @@ export interface DecisionBasic {
   outcome?: string[];
 }
 
+export interface DecisionList {
+  title: string;
+  decisions: DecisionBasic[];
+}
+
 export interface Decision extends DecisionBasic {
   options?: Option[];
   limits: Limits;

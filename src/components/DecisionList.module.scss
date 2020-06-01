@@ -1,36 +1,132 @@
-.decisionStatus {
-  // font-size: 0.65rem;
+.decisionsListContainer {
+  margin: 1em auto;
+}
+
+.decisionItemContainer {
+  overflow: hidden;
+  border-bottom: 1px solid rgba(123, 123, 123, 0.2);
+}
+
+.decisionSummary {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  @media only screen and (min-width: 600px) {
+    flex-direction: row;
+  }
+}
+
+.decisionSummarySection {
+  flex: 2;
+
+  &:first-child {
+    flex: 3;
+
+    @media only screen and (min-width: 764px) {
+      flex: 2;
+    }
+  }
+}
+
+.decisionTitle {
+  padding-right: 20px;
+}
+
+.inProgress {
+  color: #999;
+  font-style: italic;
+}
+
+.decisionWinner {
+  @media only screen and (max-width: 599px) {
+    margin-top: 5px;
+  }
+}
+
+.decisionOutcome {
   display: flex;
   align-items: center;
-  line-height: 1.2;
+  text-align: right;
+
+  @media only screen and (min-width: 600px) {
+    text-align: left;
+  }
 
   svg {
+    margin-right: 5px;
+    color: #8bc34a;
+  }
+}
+
+.decisionMembers {
+  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  margin-top: 0.2em;
+
+  svg {
+    color: #aaa;
+    margin-right: 9px;
+  }
+}
+
+.decisionSummaryActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+
+  a {
+    &:first-child {
+      margin-right: 1em;
+    }
+
+    @media only screen and (max-width: 599px) {
+      flex: 1;
+      margin-top: 5px;
+    }
+  }
+}
+
+.decisionDetails {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid #f1f1f1;
+  margin-left: 20px;
+  margin-right: 20px;
+
+  @media only screen and (min-width: 600px) {
+    flex-direction: row;
+  }
+}
+
+.decisionDetailsSection {
+  flex: 3;
+
+  &:first-child {
+    flex: 2;
+
+    @media only screen and (min-width: 764px) {
+      flex: 3;
+    }
+  }
+}
+
+.decisionDetailsTitle {
+  svg {
     font-size: 1rem;
-    margin-right: 0.3em;
+    margin-right: 0.5em;
+    vertical-align: sub;
   }
 }
 
-.active {
-  color: green;
-}
+.decisionDetailsOutcome {
+  margin-bottom: 1em;
 
-.decisionInfoBody {
-  tr {
-    vertical-align: top;
+  @media only screen and (min-width: 600px) {
+    order: 1;
+    margin-bottom: 0;
   }
-
-  td {
-    border-bottom: 0;
-  }
-
-  ol {
-    padding-left: 15px;
-  }
-}
-
-.decisionInfoHead {
-}
-
-.decisionInfoContainer {
-  background: #f9f9f9;
 }

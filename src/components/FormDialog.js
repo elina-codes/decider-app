@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -7,8 +7,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-export function FormDialog({ title, content, inputLabel, inputType, inputId }) {
-  const [open, setOpen] = React.useState(false);
+export function FormDialog({ title, content, inputLabel, inputType, inputId, onSubmit }) {
+  const [open, setOpen] = useState(false);
+  let decisionTitle = '';
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -18,22 +19,50 @@ export function FormDialog({ title, content, inputLabel, inputType, inputId }) {
     setOpen(false);
   };
 
+  const handleConfirm = () => {
+    handleClose();
+
+    const newDecision = {
+      id: '9' + Math.round(Math.random() * 99),
+      title: decisionTitle,
+      completed: false,
+      members: [
+        {
+          id: '100',
+          first_name: 'Elina',
+          last_name: 'Goldin'
+        }
+      ],
+      url: '#'
+    };
+
+    onSubmit(newDecision);
+  };
+
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleClickOpen}>
+      <Button variant="contained" color="secondary" onClick={handleClickOpen}>
         New decision
       </Button>
       <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title">{title}</DialogTitle>
         <DialogContent>
           <DialogContentText>{content}</DialogContentText>
-          <TextField autoFocus margin="dense" id={inputId} label={inputLabel} type={inputType} fullWidth />
+          <TextField
+            autoFocus
+            margin="dense"
+            id={inputId}
+            label={inputLabel}
+            type={inputType}
+            fullWidth
+            onChange={(e) => (decisionTitle = e.target.value)}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleClose} color="primary" variant="contained">
+          <Button onClick={handleConfirm} color="primary" variant="contained">
             Start
           </Button>
         </DialogActions>

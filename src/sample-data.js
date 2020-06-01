@@ -18,14 +18,24 @@ export const decisions = [
     completed: false,
     members: [
       {
+        id: '100',
+        first_name: 'Elina',
+        last_name: 'Goldin'
+      },
+      {
         id: '111',
         first_name: 'Winston',
         last_name: 'Bishop'
       },
       {
-        id: '100',
-        first_name: 'Elina',
-        last_name: 'Goldin'
+        id: '122',
+        first_name: 'Nick',
+        last_name: 'Miller'
+      },
+      {
+        id: '133',
+        first_name: 'Schmidt',
+        last_name: 'Schmidt'
       }
     ],
     url: '#'
@@ -52,8 +62,8 @@ export const decisions = [
         last_name: 'Miller'
       },
       {
-        id: '122',
-        first_name: 'Schmidty',
+        id: '133',
+        first_name: 'Something',
         last_name: 'Schmidt'
       }
     ],
