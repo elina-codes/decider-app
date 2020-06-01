@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { createDecision } from '../app/utilities';
+
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
@@ -21,21 +23,7 @@ export function FormDialog({ title, content, inputLabel, inputType, inputId, onS
 
   const handleConfirm = () => {
     handleClose();
-
-    const newDecision = {
-      id: '9' + Math.round(Math.random() * 99),
-      title: decisionTitle,
-      completed: false,
-      members: [
-        {
-          id: '100',
-          first_name: 'Elina',
-          last_name: 'Goldin'
-        }
-      ],
-      url: '#'
-    };
-
+    const newDecision = createDecision(decisionTitle);
     onSubmit(newDecision);
   };
 

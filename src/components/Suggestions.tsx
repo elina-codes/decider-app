@@ -1,36 +1,91 @@
 import React from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       '& .MuiTextField-root': {
-        margin: theme.spacing(1),
-        width: '25ch'
+        margin: theme.spacing(1)
       }
     }
   })
 );
 
-export default function Suggestions() {
+export default function Suggestions({ suggestions, submitCallback }: any) {
   const classes = useStyles();
-  const [value, setValue] = React.useState('');
+  const [value, setValue] = React.useState(suggestions);
+  const [skip, setSkip] = React.useState(false);
+  const [error, setError] = React.useState(false);
+  const [helperText, setHelperText] = React.useState('');
+  const [disabled, setDisabled] = React.useState(true);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(event.target.value);
+    const inputValue = event.target.value;
+
+    setValue(inputValue);
+
+    if (error) {
+      if (inputValue.trim().length > 0) {
+        toggleErrorUI(false);
+      }
+    } else {
+      setDisabled(inputValue.length < 1);
+    }
+  };
+
+  const suggestionsToArray = () => value.split(/\r?\n/).map((str: string) => str.trim());
+
+  const toggleErrorUI = (errorState: boolean) => {
+    const msg = errorState ? 'Please enter a valid suggestion' : '';
+    setHelperText(msg);
+    setError(errorState);
+    if (!skip) setDisabled(errorState);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!skip) {
+      if (value.trim().length) {
+        suggestions = suggestionsToArray();
+      } else {
+        toggleErrorUI(true);
+        return false;
+      }
+    }
+
+    toggleErrorUI(false);
+    setSkip(false);
+    submitCallback(suggestions);
   };
 
   return (
-    <form className={classes.root} noValidate autoComplete="off">
+    <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
       <TextField
         id="outlined-multiline-flexible"
-        label="Suggestions ("
+        label="Suggestions (One per line)"
+        helperText={helperText}
+        placeholder="My favourite option"
         multiline
+        fullWidth
+        variant="outlined"
+        InputLabelProps={{
+          shrink: true
+        }}
         value={value}
         onChange={handleChange}
-        variant="outlined"
+        error={error}
       />
+      <div className="button-container align-right">
+        <Button variant="contained" onClick={() => setSkip(true)} type="submit">
+          Skip
+        </Button>
+        <Button variant="contained" color="primary" type="submit" disabled={disabled}>
+          Proceed to voting
+        </Button>
+      </div>
     </form>
   );
 }

@@ -48,3 +48,13 @@ html {
     display: none !important;
   }
 }
+
+.button-container {
+  button + button {
+    margin-left: 1em;
+  }
+}
+
+.align-right {
+  text-align: right;
+}

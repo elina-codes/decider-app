@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-// import * as types from './app/types';
-// import { Counter } from './features/counter/Counter';
 import { DecisionList } from './components/DecisionList';
 import { FormDialog } from './components/FormDialog';
 import Header from './components/Header';
@@ -8,28 +6,36 @@ import Typography from '@material-ui/core/Typography';
 import * as sampleData from './sample-data';
 import './App.scss';
 import Suggestions from './components/Suggestions';
-import * as types from './app/types';
 
 function App() {
   const [decisions, setDecisions] = useState(sampleData.decisions);
+  const [suggestions, setSuggestions] = useState([]);
 
-  // decision helpers
+  // decisions
   const addDecision = (decisionToUpdate: any) => {
+    // TODO: replace with API calls, callbacks
     setDecisions(decisions.concat(decisionToUpdate));
   };
 
   const deleteDecision = (decisionToUpdate: any) => {
+    // TODO: replace with API calls, callbacks
     setDecisions(decisions.filter((decision) => decision.id !== decisionToUpdate.id));
   };
 
-  const updateDecision = (decisionToUpdate: any, markComplete: boolean = false) => {
-    if (markComplete) decisionToUpdate.completed = true;
-
+  const updateDecision = (decisionToUpdate: any) => {
+    // TODO: replace with API calls, callbacks
     setDecisions(decisions.map((decision) => (decision.id === decisionToUpdate.id ? decisionToUpdate : decision)));
   };
 
   const completeDecision = (decisionToUpdate: any) => {
-    updateDecision(decisionToUpdate, true);
+    decisionToUpdate.completed = true;
+    updateDecision(decisionToUpdate);
+  };
+
+  // suggestions
+  const updateSuggestions = (suggestions: []) => {
+    // TODO: replace with API calls, callbacks
+    setSuggestions(suggestions);
   };
 
   return (
@@ -52,9 +58,9 @@ function App() {
           />
         </div>
 
-        <DecisionList decisions={decisions} filterByStatus onDelete={deleteDecision} />
+        <DecisionList decisions={decisions} onDelete={deleteDecision} />
 
-        <Suggestions />
+        <Suggestions suggestions={suggestions} submitCallback={updateSuggestions} />
       </main>
     </div>
   );

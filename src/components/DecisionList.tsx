@@ -19,6 +19,10 @@ import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Divider from '@material-ui/core/Divider';
 
+import Switch from '@material-ui/core/Switch';
+// import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+
 // import { stringify } from 'querystring';
 
 const createListItem = (key: string | number, text: string) => <li key={key}>{text}</li>;
@@ -123,9 +127,13 @@ function decisionUIData(decision: types.DecisionBasic) {
   return { memberList, outcomeOrActions, outcomeList };
 }
 
-export const DecisionList = ({ decisions, onDelete, filterByStatus = false }: any) => {
-  // return decisions.map((decision: any) => <p>{decision.title}</p>);
+export const DecisionList = ({ decisions, onDelete }: any) => {
+  const [filterByStatus, setFilterByStatus] = React.useState(false);
   let decisionList: types.DecisionList[] = [];
+
+  const toggleFilterByStatus = () => {
+    setFilterByStatus((prev) => !prev);
+  };
 
   if (filterByStatus) {
     const completedDecisions: types.DecisionList = {
@@ -149,6 +157,11 @@ export const DecisionList = ({ decisions, onDelete, filterByStatus = false }: an
 
   return (
     <>
+      <FormControlLabel
+        control={<Switch checked={filterByStatus} onChange={toggleFilterByStatus} />}
+        label="Filter by Status"
+      />
+
       {decisionList.map((group, key) => (
         <div className={styles.decisionsListContainer} key={`decisionGroup-${key}`}>
           <Typography variant="overline" component="h2" className={styles.decisionsListHead}>
