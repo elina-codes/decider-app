@@ -13,13 +13,18 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function Suggestions({ suggestions, submitCallback }: any) {
+export default function Suggestions({ props, setPageTitle }: any) {
+  const [suggestions, suggestionUtilities] = props;
+  const { updateSuggestions } = suggestionUtilities();
+
   const classes = useStyles();
   const [value, setValue] = React.useState(suggestions);
   const [skip, setSkip] = React.useState(false);
   const [error, setError] = React.useState(false);
   const [helperText, setHelperText] = React.useState('');
   const [disabled, setDisabled] = React.useState(true);
+
+  setPageTitle('Suggestions');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
@@ -49,7 +54,8 @@ export default function Suggestions({ suggestions, submitCallback }: any) {
 
     if (!skip) {
       if (value.trim().length) {
-        suggestions = suggestionsToArray();
+        const newSuggestions = suggestionsToArray();
+        updateSuggestions(newSuggestions);
       } else {
         toggleErrorUI(true);
         return false;
@@ -58,7 +64,7 @@ export default function Suggestions({ suggestions, submitCallback }: any) {
 
     toggleErrorUI(false);
     setSkip(false);
-    submitCallback(suggestions);
+    // submitCallback();
   };
 
   return (
@@ -83,7 +89,7 @@ export default function Suggestions({ suggestions, submitCallback }: any) {
           Skip
         </Button>
         <Button variant="contained" color="primary" type="submit" disabled={disabled}>
-          Proceed to voting
+          Submit
         </Button>
       </div>
     </form>

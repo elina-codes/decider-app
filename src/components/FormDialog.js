@@ -9,7 +9,10 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 
-export function FormDialog({ title, content, inputLabel, inputType, inputId, onSubmit }) {
+export function FormDialog({ title, content, inputLabel, inputType, inputId, decisionUtilities }) {
+  // console.log(decisionUtilities);
+  const { addDecision } = decisionUtilities();
+
   const [open, setOpen] = useState(false);
   let decisionTitle = '';
 
@@ -24,7 +27,7 @@ export function FormDialog({ title, content, inputLabel, inputType, inputId, onS
   const handleConfirm = () => {
     handleClose();
     const newDecision = createDecision(decisionTitle);
-    onSubmit(newDecision);
+    addDecision(newDecision);
   };
 
   return (

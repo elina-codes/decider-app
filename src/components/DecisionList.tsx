@@ -28,7 +28,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 const createListItem = (key: string | number, text: string) => <li key={key}>{text}</li>;
 
 function decisionUIData(decision: types.DecisionBasic) {
-  const isActive = !decision.completed;
+  // const isActive = !decision.completed;
   const outcome = decision.outcome && decision.outcome.length ? decision.outcome : null;
 
   function memberList(key: string | number, limit: number = 0) {
@@ -69,51 +69,6 @@ function decisionUIData(decision: types.DecisionBasic) {
     return <ul className={`list--unstyled ${limit && 'list--inline'}`}>{memberListItems}</ul>;
   }
 
-  function outcomeOrActions() {
-    if (isActive) {
-      return (
-        <div className={styles.decisionSummaryActions}>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<PersonAddIcon />}
-            href={decision.url}
-            onClick={(e) => e.stopPropagation()}
-            onFocus={(e) => e.stopPropagation()}
-          >
-            Join
-          </Button>
-
-          <Button
-            variant="outlined"
-            color="primary"
-            endIcon={<SendIcon />}
-            href={decision.url}
-            onClick={(e) => e.stopPropagation()}
-            onFocus={(e) => e.stopPropagation()}
-          >
-            Invite
-          </Button>
-        </div>
-      );
-    } else if (outcome) {
-      return (
-        <div className={styles.decisionWinner}>
-          <Typography
-            variant="overline"
-            component="h4"
-            className={multiClass('hide-for-mobile', styles.decisionDetailsTitle)}
-          >
-            Winner
-          </Typography>
-          <span className={styles.decisionOutcome}>
-            <CheckIcon /> {outcome[0]}
-          </span>
-        </div>
-      );
-    }
-  }
-
   function outcomeList(): JSX.Element | undefined {
     if (outcome) {
       return (
@@ -124,10 +79,12 @@ function decisionUIData(decision: types.DecisionBasic) {
     }
   }
 
-  return { memberList, outcomeOrActions, outcomeList };
+  return { memberList, outcomeList };
 }
 
-export const DecisionList = ({ decisions, onDelete }: any) => {
+export const DecisionList = ({ props }: any) => {
+  const [decisions, decisionUtilities] = props;
+
   const [filterByStatus, setFilterByStatus] = React.useState(false);
   let decisionList: types.DecisionList[] = [];
 
@@ -168,7 +125,7 @@ export const DecisionList = ({ decisions, onDelete }: any) => {
             {group.title}
           </Typography>
           {group.decisions.map((decision: types.DecisionBasic, key: number) => (
-            <DecisionListItem decision={decision} key={key} onDelete={onDelete} />
+            <DecisionListItem key={key} decision={decision} decisionUtilities={decisionUtilities} />
           ))}
         </div>
       ))}
@@ -176,9 +133,10 @@ export const DecisionList = ({ decisions, onDelete }: any) => {
   );
 };
 
-export const DecisionListItem = ({ decision, onDelete }: any) => {
-  const { memberList, outcomeOrActions, outcomeList } = decisionUIData(decision);
-  const { id, title, members } = decision;
+export const DecisionListItem = ({ decision, decisionUtilities }: any) => {
+  const { deleteDecision } = decisionUtilities();
+  const { memberList, outcomeList } = decisionUIData(decision);
+  const { id, title, members, completed, outcome } = decision;
   const summaryKey = id + '-summary';
   const detailsKey = id + '-details';
 
@@ -200,7 +158,47 @@ export const DecisionListItem = ({ decision, onDelete }: any) => {
             </div>
           </div>
 
-          <div className={styles.decisionSummarySection}>{outcomeOrActions()}</div>
+          <div className={styles.decisionSummarySection}>
+            {!completed && (
+              <div className={styles.decisionSummaryActions}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<PersonAddIcon />}
+                  href={decision.url}
+                  onClick={(e) => e.stopPropagation()}
+                  onFocus={(e) => e.stopPropagation()}
+                >
+                  Join
+                </Button>
+
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  endIcon={<SendIcon />}
+                  href={decision.url}
+                  onClick={(e) => e.stopPropagation()}
+                  onFocus={(e) => e.stopPropagation()}
+                >
+                  Invite
+                </Button>
+              </div>
+            )}
+            {completed && outcome && (
+              <div className={styles.decisionWinner}>
+                <Typography
+                  variant="overline"
+                  component="h4"
+                  className={multiClass('hide-for-mobile', styles.decisionDetailsTitle)}
+                >
+                  Winner
+                </Typography>
+                <span className={styles.decisionOutcome}>
+                  <CheckIcon /> {outcome[0]}
+                </span>
+              </div>
+            )}
+          </div>
         </div>
       </ExpansionPanelSummary>
 
@@ -226,7 +224,7 @@ export const DecisionListItem = ({ decision, onDelete }: any) => {
           color="secondary"
           size="small"
           startIcon={<DeleteIcon />}
-          onClick={() => onDelete(decision)}
+          onClick={() => deleteDecision(decision)}
         >
           Delete
         </Button>
