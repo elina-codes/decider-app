@@ -20,23 +20,20 @@ export interface Limits {
   veto_min: number;
 }
 
-export interface DecisionBasic {
+export interface Decision {
   readonly id: number;
   title: string;
   completed: boolean;
   members: User[];
   url: string;
   outcome?: string[];
+  options?: Option[];
+  limits: Limits;
 }
 
 export interface DecisionList {
   title: string;
-  decisions: DecisionBasic[];
-}
-
-export interface Decision extends DecisionBasic {
-  options?: Option[];
-  limits: Limits;
+  decisions: Decision[];
 }
 
 export type ReadonlyDecision = Readonly<Decision>;

@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import TextField from '@material-ui/core/TextField';
+import { Link } from 'react-router-dom';
+import * as types from '../app/types';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -10,73 +17,87 @@ const useStyles = makeStyles((theme: Theme) =>
       '& .MuiTextField-root': {
         margin: theme.spacing(1)
       }
+    },
+    voted: {
+      background: '#aaa'
+    },
+    vetoed: {
+      background: '#666'
     }
   })
 );
 
-export default function Voting({ props, setPageTitle }: any) {
-  const [suggestions, suggestionUtilities] = props;
-  const { updateSuggestions } = suggestionUtilities();
-
+export default function Voting({ props }: any) {
+  const [currentDecision, setPageTitle] = props;
   const classes = useStyles();
-  const [value, setValue] = React.useState(suggestions);
-  const [skip, setSkip] = React.useState(false);
-  const [error, setError] = React.useState(false);
-  const [helperText, setHelperText] = React.useState('');
-  const [disabled, setDisabled] = React.useState(true);
+  const [options, setOptions] = useState(currentDecision.options);
+  const [disabled, setDisabled] = useState(false);
+  const backBtnPath = `${currentDecision.url}/suggestions`;
 
-  setPageTitle('Voting');
+  useEffect(() => {
+    setPageTitle('Voting');
+  }, []);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = event.target.value;
-
-    setValue(inputValue);
-
-    if (error) {
-      if (inputValue.trim().length > 0) {
-        toggleErrorUI(false);
-      }
-    } else {
-      setDisabled(inputValue.length < 1);
-    }
-  };
-
-  const suggestionsToArray = () => value.split(/\r?\n/).map((str: string) => str.trim());
-
-  const toggleErrorUI = (errorState: boolean) => {
-    const msg = errorState ? 'Please enter a valid suggestion' : '';
-    setHelperText(msg);
-    setError(errorState);
-    if (!skip) setDisabled(errorState);
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleVoteClick = function (e: any, option: types.Option, key: number) {
     e.preventDefault();
 
-    if (!skip) {
-      if (value.trim().length) {
-        const newSuggestions = suggestionsToArray();
-        updateSuggestions(newSuggestions);
-      } else {
-        toggleErrorUI(true);
-        return false;
-      }
+    let voteCount: number = option.vote_count;
+
+    if (option.vote_count) {
+      voteCount--;
+    } else {
+      voteCount++;
     }
 
-    toggleErrorUI(false);
-    setSkip(false);
-    // submitCallback();
+    let optionsArr = [...options];
+    optionsArr[key].vote_count = voteCount;
+
+    setOptions(optionsArr);
+  };
+
+  const handleVetoClick = function (e: any, option: types.Option, key: number) {
+    e.preventDefault();
+
+    const flippedVetoState: boolean = !option.veto;
+
+    let optionsArr = [...options];
+    optionsArr[key].veto = flippedVetoState;
+
+    setOptions(optionsArr);
   };
 
   return (
-    <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
-      <div className="button-container align-right">
-        <Button variant="contained" onClick={() => setSkip(true)} type="submit">
-          Skip
+    <form className={classes.root} noValidate autoComplete="off">
+      <List component="nav" aria-label="primary">
+        {options &&
+          options.map((option: types.Option, key: number) => (
+            <ListItem key={key} selected={options[key].veto}>
+              {options[key].vote_count > 0 && (
+                <ListItemIcon>
+                  <CheckCircleIcon />
+                </ListItemIcon>
+              )}
+              <ListItemText inset={options[key].vote_count === 0} primary={option.content} />
+              <Button variant="outlined" color="primary" onClick={(e) => handleVoteClick(e, option, key)}>
+                Vote
+              </Button>
+              <Button variant="text" color="secondary" onClick={(e) => handleVetoClick(e, option, key)}>
+                Veto
+              </Button>
+            </ListItem>
+          ))}
+      </List>
+
+      {/* TODO: component, dynamic step routing */}
+      <div className="button-container">
+        <Button variant="outlined" component={Link} to={backBtnPath}>
+          Back
         </Button>
-        <Button variant="contained" color="primary" type="submit" disabled={disabled}>
-          Submit
-        </Button>
+        <div className="align-right">
+          <Button variant="contained" color="primary" type="submit" disabled={disabled}>
+            Submit
+          </Button>
+        </div>
       </div>
     </form>
   );

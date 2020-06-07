@@ -1,7 +1,8 @@
 // import React, { useState } from 'react';
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import * as types from '../app/types';
-import { isCurrentUser, multiClass } from '../app/utilities';
+import { isCurrentUser, multiClass, createListItem } from '../app/utilities';
 import styles from './DecisionList.module.scss';
 
 import Typography from '@material-ui/core/Typography';
@@ -25,9 +26,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 // import { stringify } from 'querystring';
 
-const createListItem = (key: string | number, text: string) => <li key={key}>{text}</li>;
-
-function decisionUIData(decision: types.DecisionBasic) {
+function decisionUIData(decision: types.Decision) {
   // const isActive = !decision.completed;
   const outcome = decision.outcome && decision.outcome.length ? decision.outcome : null;
 
@@ -85,7 +84,7 @@ function decisionUIData(decision: types.DecisionBasic) {
 export const DecisionList = ({ props }: any) => {
   const [decisions, decisionUtilities] = props;
 
-  const [filterByStatus, setFilterByStatus] = React.useState(false);
+  const [filterByStatus, setFilterByStatus] = useState(false);
   let decisionList: types.DecisionList[] = [];
 
   const toggleFilterByStatus = () => {
@@ -95,12 +94,12 @@ export const DecisionList = ({ props }: any) => {
   if (filterByStatus) {
     const completedDecisions: types.DecisionList = {
       title: 'Completed',
-      decisions: decisions.filter((decision: types.DecisionBasic) => decision.completed)
+      decisions: decisions.filter((decision: types.Decision) => decision.completed)
     };
 
     const activeDecisions: types.DecisionList = {
       title: 'In progress',
-      decisions: decisions.filter((decision: types.DecisionBasic) => !decision.completed)
+      decisions: decisions.filter((decision: types.Decision) => !decision.completed)
     };
 
     decisionList.push(activeDecisions, completedDecisions);
@@ -124,7 +123,7 @@ export const DecisionList = ({ props }: any) => {
           <Typography variant="overline" component="h2" className={styles.decisionsListHead}>
             {group.title}
           </Typography>
-          {group.decisions.map((decision: types.DecisionBasic, key: number) => (
+          {group.decisions.map((decision: types.Decision, key: number) => (
             <DecisionListItem key={key} decision={decision} decisionUtilities={decisionUtilities} />
           ))}
         </div>
@@ -162,13 +161,13 @@ export const DecisionListItem = ({ decision, decisionUtilities }: any) => {
             {!completed && (
               <div className={styles.decisionSummaryActions}>
                 <Button
+                  component={Link}
                   variant="contained"
+                  to={decision.url}
                   color="primary"
                   startIcon={<PersonAddIcon />}
-                  href={decision.url}
-                  onClick={(e) => e.stopPropagation()}
-                  onFocus={(e) => e.stopPropagation()}
                 >
+                  {' '}
                   Join
                 </Button>
 
@@ -224,7 +223,7 @@ export const DecisionListItem = ({ decision, decisionUtilities }: any) => {
           color="secondary"
           size="small"
           startIcon={<DeleteIcon />}
-          onClick={() => deleteDecision(decision)}
+          onClick={() => deleteDecision(decision.id)}
         >
           Delete
         </Button>

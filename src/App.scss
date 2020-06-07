@@ -19,10 +19,15 @@ html {
   }
 }
 
+.navBtns {
+  margin-bottom: 1em;
+}
+
 .App-heading {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 1em;
 }
 
 .list--unstyled {
@@ -50,6 +55,10 @@ html {
 }
 
 .button-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
   button + button {
     margin-left: 1em;
   }

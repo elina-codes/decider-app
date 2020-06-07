@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useHistory, Link } from 'react-router-dom';
+import * as types from '../app/types';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import { currentUser } from '../sample-data';
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -13,18 +16,40 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-export default function Suggestions({ props, setPageTitle }: any) {
-  const [suggestions, suggestionUtilities] = props;
-  const { updateSuggestions } = suggestionUtilities();
-
+const Suggestions = ({ props }: any) => {
+  const [currentDecision, decisionUtilities, setPageTitle] = props;
+  const history = useHistory();
   const classes = useStyles();
-  const [value, setValue] = React.useState(suggestions);
-  const [skip, setSkip] = React.useState(false);
-  const [error, setError] = React.useState(false);
-  const [helperText, setHelperText] = React.useState('');
-  const [disabled, setDisabled] = React.useState(true);
+  const [skip, setSkip] = useState(false);
+  const [error, setError] = useState(false);
+  const [helperText, setHelperText] = useState('');
+  const [disabled, setDisabled] = useState(true);
+  const [suggestions, setSuggestions] = useState(
+    currentDecision.options ? currentDecision.options.map((suggestion: any) => currentDecision.options) : []
+  );
+  const [value, setValue] = useState(suggestions);
 
-  setPageTitle('Suggestions');
+  useEffect(() => {
+    setPageTitle('Suggestions');
+  }, []);
+
+  // ----------------------------------
+  // Options
+  // ----------------------------------
+  const updateSuggestions = (suggestions: []) => {
+    // TODO: replace with API calls, callbacks
+    setSuggestions(suggestions);
+
+    const formattedOptions = suggestions.map((suggestion: types.Option) => ({
+      content: suggestion,
+      authorId: currentUser.id,
+      vote_count: 0,
+      veto: false
+    }));
+
+    (currentDecision as any).options.push(...formattedOptions);
+    decisionUtilities().updateDecision(currentDecision);
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = event.target.value;
@@ -64,14 +89,14 @@ export default function Suggestions({ props, setPageTitle }: any) {
 
     toggleErrorUI(false);
     setSkip(false);
-    // submitCallback();
+    history.push(currentDecision.url + '/voting');
   };
 
   return (
     <form className={classes.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
       <TextField
         id="outlined-multiline-flexible"
-        label="Suggestions (One per line)"
+        label="Separate with commas or on separate lines"
         helperText={helperText}
         placeholder="My favourite option"
         multiline
@@ -84,14 +109,23 @@ export default function Suggestions({ props, setPageTitle }: any) {
         onChange={handleChange}
         error={error}
       />
-      <div className="button-container align-right">
-        <Button variant="contained" onClick={() => setSkip(true)} type="submit">
-          Skip
+
+      {/* TODO: component */}
+      <div className="button-container">
+        <Button variant="outlined" component={Link} to="/">
+          Back
         </Button>
-        <Button variant="contained" color="primary" type="submit" disabled={disabled}>
-          Submit
-        </Button>
+        <div className="align-right">
+          <Button variant="contained" onClick={() => setSkip(true)} type="submit">
+            Skip
+          </Button>
+          <Button variant="contained" color="primary" type="submit" disabled={disabled}>
+            Submit
+          </Button>
+        </div>
       </div>
     </form>
   );
-}
+};
+
+export default Suggestions;

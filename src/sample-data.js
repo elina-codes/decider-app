@@ -10,7 +10,14 @@ export const decisions = [
         last_name: 'Goldin'
       }
     ],
-    url: '#'
+    options: [],
+    limits: {
+      vote_max: null,
+      vote_min: null,
+      veto_max: null,
+      veto_min: null
+    },
+    url: '/900'
   },
   {
     id: '911',
@@ -38,7 +45,14 @@ export const decisions = [
         last_name: 'Schmidt'
       }
     ],
-    url: '#'
+    options: [],
+    limits: {
+      vote_max: null,
+      vote_min: null,
+      veto_max: null,
+      veto_min: null
+    },
+    url: '/911'
   },
   {
     id: '922',
@@ -67,7 +81,14 @@ export const decisions = [
         last_name: 'Schmidt'
       }
     ],
-    url: '#'
+    options: [],
+    limits: {
+      vote_max: null,
+      vote_min: null,
+      veto_max: null,
+      veto_min: null
+    },
+    url: '/922'
   }
 ];
 
